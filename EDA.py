@@ -8,9 +8,11 @@ independents = ['Age','Education_Level','Occupation','Number_of_Dependents','Loc
 dependent = 'Income'
 
 for i in range(len(independents)):
-    medians = dataFile.groupby(independents[i])[dependent].median()
     print(dependent + ' vs ' + independents[i] + '\n')
-    plt.bar(medians.index, medians.values)
+    medians = dataFile.groupby(independents[i])[dependent].median().reset_index()
+    print(medians)
+    exit()
+    plt.bar(medians[independents[i]], medians[dependent])
     plt.yscale('linear')
     plt.xlabel(independents[i])
     plt.ylabel(dependent)
@@ -19,9 +21,9 @@ for i in range(len(independents)):
     plt.cla()
 
 for i in range(len(independents)):
-    medians = dataFile.groupby(independents[i])[dependent].median()
     print(dependent + ' vs ' + independents[i] + '\n')
-    plt.plot(medians.index, medians.values)
+    medians = dataFile.groupby(independents[i])[dependent].median().reset_index()
+    plt.plot(medians[independents[i]], medians[dependent])
     plt.yscale('linear')
     plt.xlabel(independents[i])
     plt.ylabel(dependent)
