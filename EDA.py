@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import seaborn as sns
 
 dataFile = pd.read_csv('data.csv')
 
@@ -49,4 +50,15 @@ for i in range(len(independents)):
     plt.ylabel(dependent)
     plt.title(dependent + ' vs ' + independents[i])
     plt.savefig(dependent + '_vs_' + independents[i] + "_bar.png")
+    plt.cla()
+
+for i in range(len(independents)):
+    print(dependent + ' vs ' + independents[i] + '\n')
+    plt.figure(figsize=(8, 6))
+    plt.yscale('log') 
+    sns.boxplot(x=dataFile[independents[i]], y=dataFile[dependent], showfliers=False)
+    plt.xlabel(independents[i])
+    plt.ylabel(dependent)
+    plt.title(dependent + ' vs ' + independents[i])
+    plt.savefig(dependent + '_vs_' + independents[i] + "_box.png")
     plt.cla()
