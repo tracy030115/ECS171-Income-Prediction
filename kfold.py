@@ -67,30 +67,3 @@ def polynomial_regression(degree, X, y, folds, test_size=0.25, random_state=None
     print("Test R^2: {:.4f}".format(test_r2))
 
     return test_mse, best_model, total_error[min_error_index] # Can be modified to return whatever we need
-
-# Example usage:
-from sklearn.datasets import fetch_california_housing
-
-california_housing = fetch_california_housing()
-# print the attributes of the dataset
-# X = california_housing.data[:, [1, 3, 4]]
-X = california_housing.data[:, [0, 2, 3]]
-y = california_housing.target
-
-# print the 0th attribute of the dataset
-print(X[:, 0])
-print(california_housing.data[:, 0])
-
-
-mse_list = []
-best_model_list = []
-te_list = []
-
-degrees = range(1, 6)  # Try degrees from 1 to 5
-for degree in degrees:
-    mse , best_model , te = polynomial_regression(degree=degree, X=X, y=y, folds = 5 ,test_size=0.25, random_state=42 )
-    print("Degree:", degree, "MSE:", mse)
-    print("\n")
-    mse_list.append(mse)
-    best_model_list.append(best_model)
-    te_list.append(te)
