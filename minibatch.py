@@ -9,7 +9,7 @@ class MiniBatch:
     def __init__(self):
         self.theta = None
     
-    def fit(self, X, y, lr=0.01, epochs=20, batch_size=None, verbose=True):
+    def fit(self, X, y, lr=0.01, epochs=20, batch_size=None, verbose=True, regularization_parameter=0.01):
         self.theta = np.random.randn(X.shape[1])
         m = X.shape[0]
         loss_history = []
@@ -27,12 +27,13 @@ class MiniBatch:
                 y_pred = X_batch.dot(self.theta)
                 error = y_pred - y_batch
             
-                gradient = 2 * X_batch.T.dot(error)
+                gradient = 2 * X_batch.T.dot(error) + 2 * regularization_parameter * self.theta
                 avg_gradient = sum(gradient)/ X_batch.shape[0]
             
                 self.theta -= lr * avg_gradient
 
             y_train_pred = X.dot(self.theta)
             mse = mean_squared_error(y, y_train_pred)
-            loss_history.append(mse)
+            l2_penalty = regularization_parameter * np.sum(self.theta ** 2)
+            loss_history.append(mse + l2_penalty)
         return loss_history
