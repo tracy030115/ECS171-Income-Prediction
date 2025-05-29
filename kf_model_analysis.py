@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from minibatch import MiniBatch
+from kfold import kf_minibatch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
@@ -27,11 +28,11 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, 
 
 # call MBGD
 mb_model = MiniBatch()
-mb_loss = mb_model.fit(X_train, y_train, lr=0.01, epochs=50, batch_size=32)
+mb_loss = mb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=128)
 
 # call FBGD
 fb_model = MiniBatch()
-fb_loss = fb_model.fit(X_train, y_train, lr=0.01, epochs=50, batch_size=None)
+fb_loss = fb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=None)
 
 # plot MSE for epochs
 plt.figure()
@@ -57,3 +58,4 @@ plt.bar(["Mini-Batch", "Full-Batch"], [mb_mse, fb_mse])
 plt.ylabel("Test MSE")
 plt.title("kf_MBGD vs FBGD: Final Test MSE")
 plt.savefig("kf_mbgd_vs_fbgd_test_mse.png")
+
