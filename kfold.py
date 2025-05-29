@@ -1,9 +1,8 @@
 import numpy as np
-from sklearn.model_selection import KFold, train_test_split
+from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.preprocessing import PolynomialFeatures
 
-def polynomial_regression(degree, X, y, folds, test_size=0.25, random_state=None):
+def kf_minibatch(X, y, model_class, folds=5, lr=0.01, epochs=100, batch_size=32, random_state=None):
     # Define number of folds for cross-validation
     kf = KFold(folds)
 
@@ -15,19 +14,15 @@ def polynomial_regression(degree, X, y, folds, test_size=0.25, random_state=None
     r2 = []
     mse = []
 
-    # Set the polynomial degree of the model
-    poly_features = PolynomialFeatures(degree)
-    X_poly = poly_features.fit_transform(X)
-
     # Perform cross-validation
-    for train_index, test_index in kf.split(X_poly):
+    for fold, (train_index, test_index) in enumerate(kf.split(X)):
         # Split data into training and testing sets for this fold
-        X_train, X_test = X_poly[train_index], X_poly[test_index]
+        X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
         # Fit polynomial regression model
-        model = MiniBatch()
-        model.fit(X_train, y_train)
+        model = model_class()
+        model.fit(X_train, y_train, lr=lr, epochs=epochs, batch_size=batch_size)
 
         # Make predictions on the test set
         y_pred = X_test.dot(model.theta)
@@ -46,6 +41,8 @@ def polynomial_regression(degree, X, y, folds, test_size=0.25, random_state=None
         bias2.append(bias2_fold)
         total_error.append(total_error_fold)
         models.append(model)
+        r2.append(r2_fold)
+        mse.append(mse_fold)
 
         # Print results for this fold
         print("Variance: {:.4f}, Bias2: {:.4f}, Total error: {:.4f}, R^2: {:.4f}, MSE: {:.4f}".format(variance_fold, bias2_fold, total_error_fold, r2_fold, mse_fold))
@@ -55,15 +52,4 @@ def polynomial_regression(degree, X, y, folds, test_size=0.25, random_state=None
     best_model = models[min_error_index]
     print("Total error of the best model: {:.4f}".format(total_error[min_error_index]))
 
-    # Testing the final model on the test data
-    X_train, X_test, y_train, y_test = train_test_split(X_poly, y, test_size=test_size, random_state=42)
-    y_pred = best_model.predict(X_test)
-
-    # Store mse and r2 score of the model applied on the test data
-    test_mse = mean_squared_error(y_test, y_pred)
-    test_r2 = r2_score(y_test, y_pred)
-
-    print("Test MSE: {:.4f}".format(test_mse))
-    print("Test R^2: {:.4f}".format(test_r2))
-
-    return test_mse, best_model, total_error[min_error_index] # Can be modified to return whatever we need
+    return variance, bias2, total_error, best_model, r2, mse
