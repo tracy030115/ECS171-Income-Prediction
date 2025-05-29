@@ -5,7 +5,7 @@ from minibatch import MiniBatch
 from data_cleaning import Data_cleaning
 from hyperparameter_tuning import Hyperparameter_tuning
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.metrics import mean_squared_error
 hyperparameter_tuning = Hyperparameter_tuning()
 data_cleaning = Data_cleaning()
@@ -33,10 +33,15 @@ X_scaled = scaler.fit_transform(X)
 #y = scaler.fit_transform(y.reshape(-1, 1)).flatten()
 
 # intercept 
-X_scaled = np.c_[np.ones(X_scaled.shape[0]), X_scaled]
+#X_scaled = np.c_[np.ones(X_scaled.shape[0]), X_scaled]
+
+poly = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly.fit_transform(X_scaled)
+X_train, X_test, y_train, y_test = train_test_split(X_poly, y, test_size=0.2, random_state=42)
+
 
 # train/test split
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+#X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
 # hyperparameter tuning
 best_learning_rate, best_regularization_parameter, best_epoch = hyperparameter_tuning.get_best_param(X_train, X_test, y_train, y_test)

@@ -6,9 +6,9 @@ class Hyperparameter_tuning:
 
     def get_best_param(self, X_train, X_test, y_train, y_test):
         param = {
-            'learning_rate': [0.001, 0.005, 0.01],
-            'regularization_parameter': [0.001, 0.005, 0.01],
-            'epoch': [30, 50, 100]
+            'learning_rate': [0.00005, 0.00002, 0.00001],
+            'regularization_parameter': [0.00005, 0.00002, 0.00001],
+            'epoch': [20, 30, 40]
         }
 
         best_mse = float('inf')
@@ -27,5 +27,6 @@ class Hyperparameter_tuning:
                 best_learning_rate = learning_rate
                 best_regularization_parameter = regularization_parameter
                 best_epoch = epoch
+        print(best_learning_rate, best_regularization_parameter, best_epoch)
 
         return best_learning_rate, best_regularization_parameter, best_epoch
