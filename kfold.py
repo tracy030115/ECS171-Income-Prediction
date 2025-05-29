@@ -53,3 +53,14 @@ def kf_minibatch(X, y, model_class, folds=5, lr=0.01, epochs=100, batch_size=32,
     print("Total error of the best model: {:.4f}".format(total_error[min_error_index]))
 
     return variance, bias2, total_error, best_model, r2, mse
+
+# Example Usage
+
+# Stochastic Gradient Descent
+#k_fold_validate_minibatch(X, y, MiniBatch, batch_size=1)
+
+# Full Batch Gradient Descent
+#k_fold_validate_minibatch(X, y, MiniBatch, batch_size=None)
+
+# Mini-Batch
+#k_fold_validate_minibatch(X, y, MiniBatch, batch_size=x)
