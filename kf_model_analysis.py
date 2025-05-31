@@ -28,7 +28,10 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, 
 
 # call MBGD
 mb_model = MiniBatch()
-mb_loss = mb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=128)
+stochastic = mb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=1)
+mb_loss32 = mb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=32)
+mb_loss64 = mb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=64)
+mb_loss128 = mb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=128)
 
 # call FBGD
 fb_model = MiniBatch()
@@ -36,7 +39,10 @@ fb_loss = fb_model.fit(X_train, y_train, lr=0.00001, epochs=100, batch_size=None
 
 # plot MSE for epochs
 plt.figure()
-plt.plot(mb_loss, label="Mini-Batch (batch=32)")
+plt.plot(stochastic, label="Stochastic (batch=1)")
+plt.plot(mb_loss32, label="Mini-Batch (batch=32)")
+plt.plot(mb_loss64, label="Mini-Batch (batch=64)")
+plt.plot(mb_loss128, label="Mini-Batch (batch=128)")
 plt.plot(fb_loss, label="Full-Batch")
 plt.xlabel("Epochs")
 plt.ylabel("Mean Squared Error")
@@ -58,4 +64,3 @@ plt.bar(["Mini-Batch", "Full-Batch"], [mb_mse, fb_mse])
 plt.ylabel("Test MSE")
 plt.title("kf_MBGD vs FBGD: Final Test MSE")
 plt.savefig("kf_mbgd_vs_fbgd_test_mse.png")
-
