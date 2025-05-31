@@ -27,6 +27,5 @@ class Hyperparameter_tuning:
                 best_learning_rate = learning_rate
                 best_regularization_parameter = regularization_parameter
                 best_epoch = epoch
-        print(best_learning_rate, best_regularization_parameter, best_epoch)
 
         return best_learning_rate, best_regularization_parameter, best_epoch

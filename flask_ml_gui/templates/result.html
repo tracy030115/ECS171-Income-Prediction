@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            background-color: #105186;
+        }
+        .container {
+            text-align: center;
+            background-color: #F0F2F3;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        a.button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FDB338;
+            color: white;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Predicted Income: {{ prediction }}</p>
+        <a href="/" class="button">Go Back</a>
+    </div>
+</body>
+</html>

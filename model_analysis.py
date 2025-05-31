@@ -7,6 +7,7 @@ from hyperparameter_tuning import Hyperparameter_tuning
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.metrics import mean_squared_error
+import pickle
 hyperparameter_tuning = Hyperparameter_tuning()
 data_cleaning = Data_cleaning()
 
@@ -30,18 +31,15 @@ X = pd.get_dummies(X, drop_first=True)
 # standardize features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-#y = scaler.fit_transform(y.reshape(-1, 1)).flatten()
 
 # intercept 
 #X_scaled = np.c_[np.ones(X_scaled.shape[0]), X_scaled]
 
 poly = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly.fit_transform(X_scaled)
-X_train, X_test, y_train, y_test = train_test_split(X_poly, y, test_size=0.2, random_state=42)
-
 
 # train/test split
-#X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_poly, y, test_size=0.2, random_state=42)
 
 # hyperparameter tuning
 best_learning_rate, best_regularization_parameter, best_epoch = hyperparameter_tuning.get_best_param(X_train, X_test, y_train, y_test)
@@ -85,6 +83,28 @@ mb_mse_size32 = mean_squared_error(y_test, mb_pred_size32)
 mb_mse_size64 = mean_squared_error(y_test, mb_pred_size64)
 mb_mse_size128 = mean_squared_error(y_test, mb_pred_size128)
 fb_mse = mean_squared_error(y_test, fb_pred)
+
+# save best model for prediction
+min_mse = min(mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse)
+
+mse_to_model = {
+    mb_mse_size32: mb_model_size32,
+    mb_mse_size64: mb_model_size64,
+    mb_mse_size128: mb_model_size128,
+    fb_mse: fb_model
+}
+
+best_model = mse_to_model[min_mse]
+
+model_bundle = {
+    "model": best_model,
+    "scaler": scaler,
+    "poly": poly,
+    "selected_features": X.columns.tolist()
+}
+
+with open("model.pkl", "wb") as f:
+    pickle.dump(model_bundle, f)
 
 # MSE comparison
 plt.figure()
