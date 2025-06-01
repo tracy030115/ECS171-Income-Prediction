@@ -21,6 +21,8 @@ def index():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+
+    # get input
     input_dict = {
         "Education_Level": request.form["Education_Level"],
         "Occupation": request.form["Occupation"],
@@ -30,6 +32,7 @@ def predict():
         "Gender": request.form["Gender"]
     }
 
+    # convert input
     input_df = pd.DataFrame([input_dict])
     input_df = pd.get_dummies(input_df)
 
@@ -38,13 +41,15 @@ def predict():
             input_df[col] = 0
     input_df = input_df[selected_features]
 
-
+    # scale input
     input_scaled = scaler.transform(input_df)
     input_poly = poly.transform(input_scaled)
 
+    # predict using model and input values
     prediction = input_poly.dot(model.theta)
     predicted_value = round(prediction[0], 2)
 
+    # post results
     return render_template("result.html", prediction=predicted_value)
 
 if __name__ == "__main__":

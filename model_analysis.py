@@ -35,6 +35,7 @@ X_scaled = scaler.fit_transform(X)
 # intercept 
 #X_scaled = np.c_[np.ones(X_scaled.shape[0]), X_scaled]
 
+# polynomial features
 poly = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly.fit_transform(X_scaled)
 
@@ -70,7 +71,7 @@ plt.xlabel("Epochs")
 plt.ylabel("Mean Squared Error")
 plt.title("MBGD(32) vs MBGD(64) vs MBGD(128) vs FBGD Loss Curve")
 plt.legend()
-plt.savefig("mbgd_vs_fbgd_loss_curve.png")
+plt.savefig("mbgd_vs_fbgd_loss_curve_no_kfold.png")
 
 # predict 
 mb_pred_size32 = X_test.dot(mb_model_size32.theta)
@@ -84,9 +85,10 @@ mb_mse_size64 = mean_squared_error(y_test, mb_pred_size64)
 mb_mse_size128 = mean_squared_error(y_test, mb_pred_size128)
 fb_mse = mean_squared_error(y_test, fb_pred)
 
-# save best model for prediction
+# find min mse
 min_mse = min(mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse)
 
+# get best model from min mse
 mse_to_model = {
     mb_mse_size32: mb_model_size32,
     mb_mse_size64: mb_model_size64,
@@ -96,7 +98,8 @@ mse_to_model = {
 
 best_model = mse_to_model[min_mse]
 
-model_bundle = {
+# save best model
+model = {
     "model": best_model,
     "scaler": scaler,
     "poly": poly,
@@ -104,11 +107,11 @@ model_bundle = {
 }
 
 with open("model.pkl", "wb") as f:
-    pickle.dump(model_bundle, f)
+    pickle.dump(model, f)
 
 # MSE comparison
 plt.figure()
 plt.bar(["Mini-Batch (32)", "Mini-Batch (64)", "Mini-Batch (128)", "Full-Batch"], [mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse])
 plt.ylabel("Test MSE")
 plt.title("MBGD(32) vs MBGD(64) vs MBGD(128) vs FBGD: Final Test MSE")
-plt.savefig("mbgd_vs_fbgd_test_mse.png")
+plt.savefig("mbgd_vs_fbgd_test_mse_no_kfold.png")
