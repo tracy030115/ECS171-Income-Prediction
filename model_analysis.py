@@ -17,14 +17,11 @@ data = pd.read_csv("data.csv")
 # set seed
 np.random.seed(60)
 
-# remove data with outliers 
-cleaned_data = data_cleaning.remove_outliers(data, ["Income", "Work_Experience"])
-
 # feature selection
 selected_features = ["Education_Level", "Occupation", "Location", "Work_Experience", "Employment_Status", "Gender"]
 
-X = cleaned_data[selected_features]
-y = cleaned_data["Income"].values
+X = data[selected_features]
+y = data["Income"].values
 
 X = pd.get_dummies(X, drop_first=True)
 
