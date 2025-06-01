@@ -45,6 +45,10 @@ X_train, X_test, y_train, y_test = train_test_split(X_poly, y, test_size=0.2, ra
 # hyperparameter tuning
 best_learning_rate, best_regularization_parameter, best_epoch = hyperparameter_tuning.get_best_param(X_train, X_test, y_train, y_test)
 
+# call SGD
+mb_model_size1 = MiniBatch()
+mb_loss_size1 = mb_model_size1.fit(X_train, y_train, lr=best_learning_rate, epochs=best_epoch, batch_size=1, regularization_parameter=best_regularization_parameter)
+
 # call MBGD batch size 32
 mb_model_size32 = MiniBatch()
 mb_loss_size32 = mb_model_size32.fit(X_train, y_train, lr=best_learning_rate, epochs=best_epoch, batch_size=32, regularization_parameter=best_regularization_parameter)
@@ -63,33 +67,37 @@ fb_loss = fb_model.fit(X_train, y_train, lr=best_learning_rate, epochs=best_epoc
 
 # plot MSE for epochs
 plt.figure()
+plt.plot(mb_loss_size1, label="SGD")
 plt.plot(mb_loss_size32, label="Mini-Batch (batch=32)")
 plt.plot(mb_loss_size64, label="Mini-Batch (batch=64)")
 plt.plot(mb_loss_size128, label="Mini-Batch (batch=128)")
 plt.plot(fb_loss, label="Full-Batch")
 plt.xlabel("Epochs")
 plt.ylabel("Mean Squared Error")
-plt.title("MBGD(32) vs MBGD(64) vs MBGD(128) vs FBGD Loss Curve")
+plt.title("MBGD vs FBGD Loss Curve")
 plt.legend()
-plt.savefig("mbgd_vs_fbgd_loss_curve_no_kfold.png")
+plt.savefig("mbgd_vs_fbgd_loss_curve.png")
 
 # predict 
+mb_pred_size1 = X_test.dot(mb_model_size1.theta)
 mb_pred_size32 = X_test.dot(mb_model_size32.theta)
 mb_pred_size64 = X_test.dot(mb_model_size64.theta)
 mb_pred_size128 = X_test.dot(mb_model_size128.theta)
 fb_pred = X_test.dot(fb_model.theta)
 
 # calculate MSE
+mb_mse_size1 = mean_squared_error(y_test, mb_pred_size1)
 mb_mse_size32 = mean_squared_error(y_test, mb_pred_size32)
 mb_mse_size64 = mean_squared_error(y_test, mb_pred_size64)
 mb_mse_size128 = mean_squared_error(y_test, mb_pred_size128)
 fb_mse = mean_squared_error(y_test, fb_pred)
 
 # find min mse
-min_mse = min(mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse)
+min_mse = min(mb_mse_size1, mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse)
 
 # get best model from min mse
 mse_to_model = {
+    mb_mse_size1: mb_model_size1,
     mb_mse_size32: mb_model_size32,
     mb_mse_size64: mb_model_size64,
     mb_mse_size128: mb_model_size128,
@@ -111,7 +119,9 @@ with open("model.pkl", "wb") as f:
 
 # MSE comparison
 plt.figure()
-plt.bar(["Mini-Batch (32)", "Mini-Batch (64)", "Mini-Batch (128)", "Full-Batch"], [mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse])
+plt.bar(["SGD", "Mini-Batch (32)", "Mini-Batch (64)", "Mini-Batch (128)", "Full-Batch"], [mb_mse_size1, mb_mse_size32, mb_mse_size64, mb_mse_size128, fb_mse])
 plt.ylabel("Test MSE")
-plt.title("MBGD(32) vs MBGD(64) vs MBGD(128) vs FBGD: Final Test MSE")
-plt.savefig("mbgd_vs_fbgd_test_mse_no_kfold.png")
+plt.title("MBGD vs FBGD: Final Test MSE")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig("mbgd_vs_fbgd_test_mse.png")
