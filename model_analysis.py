@@ -2,14 +2,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from minibatch import MiniBatch
-from data_cleaning import Data_cleaning
 from hyperparameter_tuning import Hyperparameter_tuning
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.metrics import mean_squared_error
 import pickle
 hyperparameter_tuning = Hyperparameter_tuning()
-data_cleaning = Data_cleaning()
 
 # load data
 data = pd.read_csv("data.csv")
