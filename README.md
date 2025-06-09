@@ -12,6 +12,7 @@ This project predicts annual household income based on six key social and demogr
 - Gender
 
 ## How to Run Web Demo 
+```bash
 $ pip install Flask
-Navigate to flask_ml_gui
-run $ python app.py
+$ cd flask_ml_gui
+$ python app.py
