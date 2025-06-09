@@ -1,10 +1,7 @@
-# Prediction-of-Annual-Household-Income-from-Social-and-Demographic-Factors-
-
+# ECS171 Project: Income Prediction
 
 ##  Description
 This project predicts annual household income based on six key social and demographic features using a machine learning model. 
-
----
 
 ## Features Used for Prediction
 - Education Level  
@@ -13,8 +10,6 @@ This project predicts annual household income based on six key social and demogr
 - Work Experience  
 - Employment Status  
 - Gender
-
----
 
 ## How to Run Web Demo 
 $ pip install Flask
